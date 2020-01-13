@@ -1,0 +1,68 @@
+1.4.2
+==========
+2020-01-13  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-50 - Add Stop support to TransLoc
+
+1.4.1
+==========
+2020-01-13  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-46 - Implement RouteShout API v2
+	* ISSUE-47 - Add the ability to hide Route Numbers in the Agency List
+
+1.4.0
+==========
+2020-01-12  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-42 - Show the stops of selected routes
+
+2020-01-12  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-35 - Update Dependabot Dependencies
+
+1.2.4
+==========
+2020-01-08  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-33 - Fix pinch zoom on iOS 13
+
+1.2.3
+==========
+2020-01-06  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-31 - Allow passing in a url for TransLoc
+
+1.2.2
+==========
+2019-12-29  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-28 - Add CI Support
+
+1.2.1
+==========
+2019-12-20  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-26 - Add better favicons
+
+1.2.0
+==========
+2019-12-18  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-18 - Add Support for RouteMatch/RouteShout
+
+1.0.0
+==========
+2018-07-30  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-9 - Support Progressive Web App Guidelines
+
+2018-07-24  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-12 - Store the last viewport
+	* ISSUE-13 - After viewport change, reload vehicle locations
+
+2018-07-23  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-10 - Don't start with all routes selected
+
+2018-02-07  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-7 - Optimize requests and state changes
+
+2018-02-06  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-3 - Allow hiding/showing of routes
+
+2018-02-04  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-2 - Add transloc parser
+
+2018-02-04  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-1 - Add in pretty markers
+
