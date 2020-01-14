@@ -1,7 +1,7 @@
 {
-    "short_name": "Montclair",
-    "name": "Montclair",
-    "description": "Montclair Bus Tracker for Birmingham, AL",
+    "short_name": "Go Huntsville",
+    "name": "Go Huntsville",
+    "description": "Real Time Tracking of the Buses for Huntsville, AL",
     "icons": [
         {
             "src": "favicon.ico",
@@ -21,13 +21,13 @@
     "prefer_related_applications": true,
     "related_applications": [
         {
-	    "platform": "play",
-	    "url": "https://play.google.com/store/apps/details?id=net.line72.montclair",
-	    "id": "net.line72.montclair"
+            "platform": "play",
+            "url": "https://play.google.com/store/apps/details?id=com.gotransitapp.huntsville",
+            "id": "com.gotransitapp.huntsville"
         },
         {
             "platform": "itunes",
-            "url": "https://itunes.apple.com/us/app/montclair/id1418953482"
+            "url": "https://apps.apple.com/us/app/gohuntsville/idREPLACE_ME"
         }
     ]
 }
