@@ -1,3 +1,44 @@
+1.12.0
+1.11.3
+==========
+2023-10-23  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-139 - Allow specifying tile server
+
+1.11.2
+==========
+2023-09-14  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-136 - Add Support for Transitapp Api
+
+1.11.1
+==========
+2023-09-03  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-127 - Fix CI
+
+1.11.0
+1.10.0
+1.9.2
+==========
+2023-09-03  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-125 - Add a Route Name Transformer
+	* ISSUE-122 - Add Support for Clever Devices Bustime API
+
+1.9.1
+==========
+2020-02-21  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-87 - Auto compact the pouchdb
+
+1.9.0
+1.8.0
+1.7.6
+==========
+2020-02-16  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-75 - Add License Attribution Info
+
+1.7.5
+==========
+2020-02-09  Marcus Dillavou  <line72@line72.net>
+	* ISSUE-74 - Add GTFS-rt Support
+
 1.6.4
 ==========
 2020-02-08  Marcus Dillavou  <line72@line72.net>

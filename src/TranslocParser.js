@@ -32,7 +32,28 @@ class TranslocParser {
         });
     }
 
-    getRoutes() {
+    /**
+     * Initialze the parser.
+     *
+     * This should be called Before calling any other method.
+     *
+     * @return Promise -> true
+     */
+    initialize() {
+        return new Promise((success, failure) => {
+            success(true);
+        });
+    }
+
+    /**
+     * Get the routes.
+     *
+     * Available options:
+     *  - parseNameFn :: (str) -> str :: This can transform the route name
+     *
+     * @return Promise -> map(Id,RouteType) : Returns a map of RouteTypes by Id
+     */
+    getRoutes(options) {
         // first get the segments so we can build our route paths
         let url = `/segments.json?agencies=${this.agency_id}`;
         return this.requestor.get(url).then((response) => {
@@ -55,10 +76,17 @@ class TranslocParser {
                         }
                     });
 
+                    let parseName = (n) => {
+                        if (options && options.parseNameFn) {
+                            return options.parseNameFn(n);
+                        }
+                        return n;
+                    };
+                    
                     acc[route.route_id] = new RouteType({
                         id: route.route_id,
                         number: route.short_name,
-                        name: route.long_name,
+                        name: parseName(route.long_name),
                         color: route.color,
                         polyline: polyline
                     });
@@ -133,6 +161,13 @@ class TranslocParser {
             });
     }
 
+    /**
+     * Get the vehicles for an area or a list of routes
+     *
+     * @param bounds -> ([LatLng]) : The leaflef bounds of the map
+     * @param visible_routes -> ([RouteType]) : The list of routes
+     * @return Promise -> map(RouteId,VehicleType) : Returns a map of VehicleType by RouteId
+     */
     getVehicles(bounds, visible_routes) {
         let url = `/vehicles.json?agencies=${this.agency_id}`;
 

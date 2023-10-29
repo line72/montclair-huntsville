@@ -20,6 +20,8 @@ import StopOverlayType from './StopOverlayType';
 import LocalStorage from './LocalStorage';
 import StopEstimatesContainer from './StopEstimatesContainer';
 import ExploreContainer from './ExploreContainer';
+import LoadingModal from './LoadingModal';
+import ErrorPage from './ErrorPage';
 
 import './w3.css';
 import './RouteContainer.css';
@@ -35,6 +37,7 @@ class RouteContainer extends Component {
         let agencies = this.configuration.agencies.map((a) => {
             return {name: a.name,
                     visible: true,
+                    options: a.options || {},
                     parser: a.parser,
                     hideRouteNumber: !!a.hideRouteNumber,
                     routes: {}};
@@ -47,21 +50,40 @@ class RouteContainer extends Component {
         this.has_fetched_routes = false;
 
         this.state = {
+            error: false,
+            errorMessage: '',
+            loading: true,
             mode: MODE.EXPLORE,
             agencies: agencies,
             stopOverlay: new StopOverlayType({})
         };
 
+        // initialize all the parsers, then
+        // fetch the routes
+        axios.all(this.state.agencies.map((a, index) => {
+            return a.parser.initialize();
+        })).then((results) => {
+            this.setState({
+                loading: false
+            });
 
-        this.getRoutes().then((results) => {
-            this.has_fetched_routes = true;
+            this.getRoutes().then((results) => {
+                this.has_fetched_routes = true;
 
-            // get the stops for any visible routes
-            this.getStops();
+                // get the stops for any visible routes
+                this.getStops();
 
-            // setup a timer to fetch the vehicles
-            this.getVehicles();
-            setInterval(() => {this.getVehicles();}, 10000);
+                // setup a timer to fetch the vehicles
+                this.getVehicles();
+                setInterval(() => {this.getVehicles();}, 10000);
+            });
+        }).catch((e) => {
+            console.error('Uh-oh...', e);
+            // This is an unrecoverable error
+            this.setState({
+                error: true,
+                errorMessage: 'Uh-oh: An unrecoverable error happened.'
+            });
         });
     }
 
@@ -69,7 +91,7 @@ class RouteContainer extends Component {
         return axios.all(this.state.agencies.map((a, index) => {
             a.visible = this.storage.isAgencyVisible(a);
 
-            return a.parser.getRoutes().then((routes) => {
+            return a.parser.getRoutes(a.options || {}).then((routes) => {
                 // the visibility is stored offline in local storage,
                 //  restore it.
                 const r = Object.keys(routes).reduce((acc, key) => {
@@ -281,29 +303,51 @@ class RouteContainer extends Component {
         });
     }
 
+    renderLoading() {
+        if (this.state.loading) {
+            return (
+                <LoadingModal />
+            );
+        } else {
+            return (null);
+        }
+    }
+
     render() {
+        if (this.state.error) {
+            return (
+                <ErrorPage message={this.state.errorMessage}/>
+            );
+        }
+
         if (this.state.mode === MODE.STOP) {
             return (
-                <StopEstimatesContainer
-                  configuration={this.configuration}
-                  stopOverlay={this.state.stopOverlay}
-                  onClose={this.onStopOverlayClosed}
-                  initialViewport={this.initialViewport}
-                />
+                <div>
+                  { this.renderLoading() }
+                  <StopEstimatesContainer
+                    configuration={this.configuration}
+                    stopOverlay={this.state.stopOverlay}
+                    onClose={this.onStopOverlayClosed}
+                    initialViewport={this.initialViewport}
+                  />
+                </div>
             );
         } else {
             return (
-                <ExploreContainer
-                  configuration={this.configuration}
-                  agencies={this.state.agencies}
-                  isFirstRun={this.storage.isFirstRun()}
-                  onStopClicked={this.onStopClicked}
-                  togggleAgency={this.toggleAgency}
-                  toggleRoute={this.toggleRoute}
-                  initialViewport={this.initialViewport}
-                  onBoundsChanged={this.onBoundsChanged}
-                  onViewportChanged={this.onViewportChanged}
-                />
+                <div>
+                  { this.renderLoading() }
+                  <ExploreContainer
+                    configuration={this.configuration}
+                    agencies={this.state.agencies}
+                    isFirstRun={this.storage.isFirstRun()}
+                    onStopClicked={this.onStopClicked}
+                    togggleAgency={this.toggleAgency}
+                    toggleRoute={this.toggleRoute}
+                    initialViewport={this.initialViewport}
+                    onBoundsChanged={this.onBoundsChanged}
+                    onViewportChanged={this.onViewportChanged}
+                  />
+                </div>
             );
         }
     }

@@ -43,7 +43,28 @@ class RouteShoutParser {
         });
     }
 
-    getRoutes() {
+    /**
+     * Initialze the parser.
+     *
+     * This should be called Before calling any other method.
+     *
+     * @return Promise -> true
+     */
+    initialize() {
+        return new Promise((success, failure) => {
+            success(true);
+        });
+    }
+
+    /**
+     * Get the routes.
+     *
+     * Available options:
+     *  - parseNameFn :: (str) -> str :: This can transform the route name
+     *
+     * @return Promise -> map(Id,RouteType) : Returns a map of RouteTypes by Id
+     */
+    getRoutes(options) {
         // !mwd - TODO, will need to use routeshout api to
         //  get this list
         return new Promise((resolve, reject) => {
@@ -54,10 +75,17 @@ class RouteShoutParser {
                     // generate a list of lat/long as a polyine
                     const polyline = this.generatePolyline(response.data);
 
+                    let parseName = (n) => {
+                        if (options && options.parseNameFn) {
+                            return options.parseNameFn(n);
+                        }
+                        return n;
+                    };
+                    
                     return new RouteType({
                         id: idx,
                         number: number,
-                        name: name,
+                        name: parseName(name),
                         color: color,
                         polyline: polyline
                     });
@@ -103,6 +131,13 @@ class RouteShoutParser {
         });
     }
 
+    /**
+     * Get the vehicles for an area or a list of routes
+     *
+     * @param bounds -> ([LatLng]) : The leaflef bounds of the map
+     * @param visible_routes -> ([RouteType]) : The list of routes
+     * @return Promise -> map(RouteId,VehicleType) : Returns a map of VehicleType by RouteId
+     */
     getVehicles(bounds, visible_routes) {
         return new Promise((resolve, reject) => {
             const requests = visible_routes.map((r) => {

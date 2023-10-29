@@ -18,6 +18,10 @@ class Configuration {
     constructor() {
         // Huntsville, AL
         this.center = [34.730317, -86.585925];
+        this.tileserver = {
+            url: 'https://huntsville.gotransitapp.com/tiles/{z}/{x}/{y}.png',
+            subdomains: ''
+        };
         this.agencies = [
             {
                 name: 'Routes',

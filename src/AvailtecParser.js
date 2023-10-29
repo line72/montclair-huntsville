@@ -23,15 +23,43 @@ class AvailtecParser {
         this.url = url
     }
 
-    getRoutes() {
+    /**
+     * Initialze the parser.
+     *
+     * This should be called Before calling any other method.
+     *
+     * @return Promise -> true
+     */
+    initialize() {
+        return new Promise((success, failure) => {
+            success(true);
+        });
+    }
+
+    /**
+     * Get the routes.
+     *
+     * Available options:
+     *  - parseNameFn :: (str) -> str :: This can transform the route name
+     *
+     * @return Promise -> map(Id,RouteType) : Returns a map of RouteTypes by Id
+     */
+    getRoutes(options) {
         let url = this.url + '/rest/Routes/GetVisibleRoutes';
 
         return axios.get(url).then((response) => {
             let routes = response.data.reduce((acc, route) => {
+                let parseName = (n) => {
+                    if (options && options.parseNameFn) {
+                        return options.parseNameFn(n);
+                    }
+                    return n;
+                };
+                
                 acc[route.RouteId] = new RouteType({
                     id: route.RouteId,
                     number: route.RouteId,
-                    name: route.LongName,
+                    name: parseName(route.LongName),
                     color: route.Color,
                     kml: this.url + '/Resources/Traces/' + route.RouteTraceFilename
                 });
@@ -103,6 +131,13 @@ class AvailtecParser {
         });
     }
 
+    /**
+     * Get the vehicles for an area or a list of routes
+     *
+     * @param bounds -> ([LatLng]) : The leaflef bounds of the map
+     * @param visible_routes -> ([RouteType]) : The list of routes
+     * @return Promise -> map(RouteId,VehicleType) : Returns a map of VehicleType by RouteId
+     */
     getVehicles(bounds, visible_routes) {
         let url = this.url + '/rest/Routes/GetVisibleRoutes';
 

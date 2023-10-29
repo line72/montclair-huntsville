@@ -30,7 +30,28 @@ class RouteShout2Parser {
         });
     }
 
-    getRoutes() {
+    /**
+     * Initialze the parser.
+     *
+     * This should be called Before calling any other method.
+     *
+     * @return Promise -> true
+     */
+    initialize() {
+        return new Promise((success, failure) => {
+            success(true);
+        });
+    }
+
+    /**
+     * Get the routes.
+     *
+     * Available options:
+     *  - parseNameFn :: (str) -> str :: This can transform the route name
+     *
+     * @return Promise -> map(Id,RouteType) : Returns a map of RouteTypes by Id
+     */
+    getRoutes(options) {
         const url = '/rs.routes.getList';
 
         return this.requestor.get(url, {params: {key: this.key, agency: this.agency_id}})
@@ -45,10 +66,17 @@ class RouteShout2Parser {
                     }}).then((response2) => {
                         const polyline = this.generatePolyline(response2.data);
 
+                        let parseName = (n) => {
+                            if (options && options.parseNameFn) {
+                                return options.parseNameFn(n);
+                            }
+                            return n;
+                        };
+                    
                         return new RouteType({
                             id: route.id,
                             number: route.sn,
-                            name: route.ln,
+                            name: parseName(route.ln),
                             color: route.c.slice(1), // strip the #
                             polyline: polyline
                         });
@@ -125,6 +153,13 @@ class RouteShout2Parser {
             });
     }
 
+    /**
+     * Get the vehicles for an area or a list of routes
+     *
+     * @param bounds -> ([LatLng]) : The leaflef bounds of the map
+     * @param visible_routes -> ([RouteType]) : The list of routes
+     * @return Promise -> map(RouteId,VehicleType) : Returns a map of VehicleType by RouteId
+     */
     getVehicles(bounds, visible_routes) {
         const requests = visible_routes.map((r) => {
             const url = '/rs.vehicle.getListByRoutes';
